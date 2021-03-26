@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const animalSchema = new Schema({
+const petSchema = new Schema({
     name: {
         type: String,
         required: 'A pet name is required'
@@ -24,7 +24,7 @@ const animalSchema = new Schema({
       species: {
           type: String,
           required: 'Your pet species is required',
-          enum: ['Dog, Cat, Bird, Fish, Turtle, Hamster, Horse']
+          enum: ['Dog', 'Cat', 'Bird', 'Fish', 'Turtle', 'Hamster', 'Horse']
       },
       location: {
         type: {
@@ -52,6 +52,6 @@ const animalSchema = new Schema({
 });
 
 
-const Animal = mongoose.model('Animal', animalSchema);
-module.exports = Animal;
+const Pet = mongoose.model('Animal', petSchema);
+module.exports = Pet;
 
