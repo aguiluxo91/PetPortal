@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const createError = require('http-errors');
 const logger = require('morgan');
 const express = require('express');
-
+const passport = require('passport');
+const session = require('./config/session.config');
 require('./config/passport.config');
 require('./config/db.config');
 
@@ -12,6 +13,9 @@ const app = express();
 
 app.use(express.json());
 app.use(logger('dev'));
+app.use(session);
+app.use(passport.initialize());
+app.use(passport.session());
 
 const router = require('./config/routes.config');
 app.use('/api', router);

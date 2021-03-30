@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const User = require('../models/user.model');
 const passport = require('passport');
+const mailer = require('../config/mailer.config');
 
 module.exports.create = (req, res, next) => {
     User.findOne({ email: req.body.email })
@@ -9,7 +10,10 @@ module.exports.create = (req, res, next) => {
                 next(createError(400, { errors: { email: 'This email already exists' } }))
             } else {
                 return User.create(req.body)
-                    .then(user => res.status(201).json(user))
+                    .then(user => {
+                        mailer.sendValidationEmail(user.email, user.verified.token, user.name);
+                        res.status(201).json(user)
+                    })
             }
         })
         .catch(next)
@@ -43,4 +47,39 @@ module.exports.update = (req, res, next) => {
     User.findByIdAndUpdate(id, req.body, { new: true })
         .then(user => res.status(202).json(user))
         .catch(next)
+};
+
+module.exports.login = (req, res, next) => {
+    passport.authenticate('local-auth', (error, user, validations) => {
+        if (error) {
+            next(error);
+        } else if (!user) {
+            next(createError(400, { errors: validations }))
+        } else {
+            req.login(user, error => {
+                if (error) next(error)
+                else res.json(user)
+            })
+        }
+    })(req, res, next);
+};
+
+module.exports.activate = (req, res, next) => {
+    User.findOneAndUpdate(
+        { 'verified.token': req.query.token },
+        { $set: { verified: { date: new Date(), token: null } } },
+        { runValidators: true }
+    ).then(user => {
+        if (!user) {
+            next(createError(404, 'Invalid activation token'));
+        } /* else {
+            res.redirect('/login');
+        } */
+    }).catch(next);
+};
+
+module.exports.logout = (req, res, next) => {
+    req.logout();
+
+    res.status(204).end()
 };

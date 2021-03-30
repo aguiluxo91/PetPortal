@@ -19,14 +19,18 @@ passport.use('local-auth', new LocalStrategy({
   User.findOne({ email })
     .then(user => {
       if (!user) {
-        next(null, null, { email: 'Invalid email or password'})
+        next(null, null, { email: 'Invalid email or password' });
       } else {
         return user.checkPassword(password)
           .then(match => {
             if (match) {
-              next(null, user)
+              if (user.verified && user.verified.date) {
+                next(null, user);
+              } else {
+                next(null, null, { email: 'Your account is not validated jet, please check your email' });
+              }
             } else {
-              next(null, null, { email: 'Invalid email or password' })
+              next(null, null, { email: 'Invalid email or password' });
             }
           })
       }
