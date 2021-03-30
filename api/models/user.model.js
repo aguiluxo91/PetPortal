@@ -19,6 +19,12 @@ const userSchema = new Schema({
         type: String,
         required: 'A valid password is required',
         match: [PASSWORD_PATTERN, 'the password is invalid']
+    },
+    avatar: {
+        type: String,
+        default: function() {
+            return "https://res.cloudinary.com/djbn7xax3/image/upload/v1617121010/PetPortal/avatar_aowbin.png"
+        }
     }
 }, {
     timestamps: true,
