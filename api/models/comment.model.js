@@ -18,7 +18,7 @@ const commentSchema = ({
         requierd:'Rate is required' ,
         enum:[1,2,3,4,5]
     },
-    createdBy:{
+    user:{
         type: String,
         required: true
     }

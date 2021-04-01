@@ -3,9 +3,9 @@ const Comment = require("../models/comment.model");
 
 module.exports.new = (req, res, next) => {
   const { id } = req.params;
-  Subjectcomment.findById(id)
-    .then((Subjectcomment) => {
-      res.render("comments/new", { Subjectcomment });
+  comment.findById(id)
+    .then((comment) => {
+      res.render("comments/new", { comment });
     })
     .catch((error) => {
       console.log(error);
@@ -21,11 +21,11 @@ module.exports.createComment = (req, res, next) => {
     res.status(400).render("comments/new", {
       comment: req.body,
       errors: errors,
-      Subjectcomment: Subjectcomment,
+      comment: comment,
     });
   }
 
-  req.body.createdBy = res.locals.User.name;
+  req.body.user = res.locals.User.name;
   req.body.idUser = id;
   console.log(req.body);
   Comment.create(req.body)
@@ -42,9 +42,9 @@ module.exports.createComment = (req, res, next) => {
           const newRate = rates / comments.length;
           const newRateShort = newRate.toFixed(1);
 
-          Subjectcomment.findByIdAndUpdate(id, { rating: newRateShort })
+          comment.findByIdAndUpdate(id, { rating: newRateShort })
             .then((Subjectcomment) => {
-              res.render(`Subjectcomments/detail`, { Subjectcomment });
+              res.render(`Subjectcomments/detail`, { comment });
             })
             .catch((error) => {
               console.log(
