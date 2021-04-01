@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const pets = require('../controllers/pets.controller');
 const users = require('../controllers/users.controller');
+const petcare = require('../controllers/petcare.controller');
+const comments = require('../controllers/comment.controller')
 
 const secure = require('../middlewares/secure.middleware');
 
@@ -25,5 +27,16 @@ router.post('/login', users.login);
 router.post('/logout', users.logout);
 router.get('/activate', users.activate);
 
+//PETCARE
+
+router.get('/petcare', petcare.list);
+router.post('/petcare', petcare.create);
+router.get('/petcare/:id', petcare.get);
+router.delete('/petcare/:id', petcare.delete);
+router.put('/petcare/:id', petcare.update);
+
+//COMMENTS ROUTES
+router.get('/comments/new/:id' );
+router.post('/comments/new/:id');
 
 module.exports = router;
